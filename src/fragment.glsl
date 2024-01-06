@@ -120,7 +120,8 @@ void main() {
         //FragColor = vec4(1.0f - lowest_dist*0.1f, 1.0f - lowest_dist*0.1f, 1.0f - lowest_dist*0.1f, 1.0f);
 
     } else {
-        FragColor = vec4(0.1f, 0.4f, 0.6f, 1.0f);
+        //if (vertex_buffer1[0].y == 1) {}
+        FragColor = vec4(0.1f/* + vertex_buffer1[0].y*/, 0.4f, 0.6f, 1.0f);
     }
 
 }

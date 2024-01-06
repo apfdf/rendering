@@ -1,7 +1,7 @@
 [
 {
-  "directory": "/home/mans/Documents/episk programmering/portal/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/portals.dir/src/main.cpp.o -c \"/home/mans/Documents/episk programmering/portal/src/main.cpp\"",
-  "file": "/home/mans/Documents/episk programmering/portal/src/main.cpp"
+  "directory": "/home/mans/Documents/episk programmering/rendering/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/rendering.dir/src/main.cpp.o -c \"/home/mans/Documents/episk programmering/rendering/src/main.cpp\"",
+  "file": "/home/mans/Documents/episk programmering/rendering/src/main.cpp"
 }
 ]

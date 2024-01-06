@@ -113,7 +113,7 @@ int main() {
         abort();
     }
 
-    const GLint shader_program = compileShaderProgram("/home/mans/Documents/episk programmering/portal/src/vertex.glsl", "/home/mans/Documents/episk programmering/portal/src/fragment.glsl");
+    const GLint shader_program = compileShaderProgram("../src/vertex.glsl", "../src/fragment.glsl");
     glUseProgram(shader_program);
 
     unordered_map<const char*, GLuint> uniform_locations;
@@ -133,7 +133,6 @@ int main() {
             height_map[i][j] = ((float)rand() / RAND_MAX);
         }
     }
-
     
     vector<glm::vec3> vertices = {};
     for (int i = 0; i < 8-1; i++) {
@@ -195,6 +194,10 @@ int main() {
         light_buffer[i] = lights[i];
     }
 
+    struct {
+        float vertex_buffer[BUFFER_SIZE*3];
+    } VertexBuffer;
+
     float fov = 0.75 * PI;
     float z0 = cos(fov/2) / sin(fov/2);
 
@@ -204,6 +207,23 @@ int main() {
     glUniform1i(uniform_locations["light_amount"], lights.size());
     glUniform3fv(uniform_locations["light_buffer"], BUFFER_SIZE, glm::value_ptr(light_buffer[0]));
     glUniform1f(uniform_locations["z0"], z0);
+    
+    /*
+    GLuint ubo;
+    glGenBuffers(1, &ubo);
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(VertexBuffer), &VertexBuffer, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    uint block = glGetUniformBlockIndex(shader_program, "VertexBuffer");
+    GLuint bind = 0;
+    glUniformBlockBinding(shader_program, block, bind);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(VertexBuffer), &VertexBuffer, GL_DYNAMIC_DRAW);
+    glBindBufferRange(GL_UNIFORM_BUFFER, bind, ubo, 0, sizeof(VertexBuffer));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    */
+
 
     Camera cam = {
         glm::vec3(0.0f, 0.0f, 0.0f),
@@ -283,10 +303,29 @@ int main() {
             light_buffer[i] = glm::vec3(l4.x, l4.y, l4.z);
         }
 
+        for (int i = 0; i < BUFFER_SIZE; i++) {
+            VertexBuffer.vertex_buffer[i*3] = vertex_buffer[i].x;
+            VertexBuffer.vertex_buffer[i*3+1] = vertex_buffer[i].y;
+            VertexBuffer.vertex_buffer[i*3+2] = vertex_buffer[i].z;
+        }
+
+        /*
+        for (int i = 0; i < BUFFER_SIZE; i++) {
+            VertexBuffer.vertex_buffer[i] = vertex_buffer[i];
+        }
+        */
+
         glm::vec4 light_pos = view_mat * glm::vec4(lights[0] - cam.p, 0.0f);
 
         glUniform3fv(uniform_locations["vertex_buffer"], BUFFER_SIZE, glm::value_ptr(vertex_buffer[0]));
         glUniform3f(uniform_locations["light_pos"], light_buffer[0].x, light_buffer[0].y, light_buffer[0].z);
+
+        /*
+        glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(VertexBuffer), &VertexBuffer, GL_STATIC_DRAW);
+        glBindBufferRange(GL_UNIFORM_BUFFER, bind, ubo, 0, sizeof(VertexBuffer));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        */
 
         /*
         glm::mat4 view_mat = glm::mat4(1.0f);
